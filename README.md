@@ -101,17 +101,25 @@ knowing.
 
 ## Status
 
-Built and locally verified: both fetch scripts against the real live
-2026/27 season (20 teams, real standings, real deadline correctly detected
-as already passed since that season kicked off before this was built), the
-issue-body parser against a realistic generated submission, and the golf
-scoring math (a perfect prediction scores 0, a fully-reversed one scores
-200 — the correct maximum for 20 teams). `data/standings.csv` in this repo
-currently holds real, live-fetched `2026/27` data (not test data) — the
-season is already underway, so this repo's actual first live prediction
-window is `2027/28`, opening automatically next August 1st.
+Built and verified end-to-end, including real runs on GitHub's own
+infrastructure (not just local testing):
 
-Not yet tested end-to-end on GitHub's infrastructure: a real issue
-submission through `process-submission.yml`, and a real scheduled run of
-either cron. Worth a manual `workflow_dispatch` test run of each before
-relying on the automatic schedule.
+- Both fetch scripts, via manually triggered `workflow_dispatch` runs -
+  `fetch_new_season.py` and `fetch_standings.py` both successfully fetched
+  real 2026/27 data, committed, and pushed.
+- The full submission pipeline, against a real test issue -
+  rejection while the deadline is in the future was correct (2026/27's
+  actual kickoff already passed before this was built, so a submission was
+  correctly rejected as closed); temporarily pushing a future test deadline
+  and re-editing the same issue then recorded it correctly; a follow-up
+  edit with a duplicate team was correctly rejected *without* touching the
+  prior valid data; the `recorded` label was added and removed at the
+  right times throughout. Test issue and test data were cleaned up
+  afterward - `data/deadline.txt` is back to 2026/27's real (passed)
+  kickoff time and `data/submissions.csv` doesn't exist yet.
+- The golf scoring math (a perfect prediction scores 0, a fully-reversed
+  one scores 200 - the correct maximum for 20 teams).
+
+`data/standings.csv` holds real, live-fetched `2026/27` data (not test
+data) - that season is already underway, so this repo's first real
+prediction window is `2027/28`, opening automatically next August 1st.
