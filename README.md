@@ -52,6 +52,15 @@ in `index.html` (`computeSeasonStandings`), continuously, from whatever
 `data/standings.csv` currently shows — which is what makes the Overview
 tab "live": it's exactly whatever the last daily fetch left behind.
 
+## The Collective
+
+`computeCollective()` blends every player's predicted rank per team (mean
+of their predicted positions) into one composite table, re-ranks it, and
+scores it the same golf way — a "wisdom of the crowd" read on the group's
+picks, not a real submission. Rendered on every Overview/History table
+alongside the real players' cards, purely derived from `submissions.csv` -
+no separate data file.
+
 ## `data/standings.csv` schema
 
 One file, two jobs: it's both the season's 20-team roster (seeded Aug 1)
@@ -116,10 +125,31 @@ infrastructure (not just local testing):
   prior valid data; the `recorded` label was added and removed at the
   right times throughout. Test issue and test data were cleaned up
   afterward - `data/deadline.txt` is back to 2026/27's real (passed)
-  kickoff time and `data/submissions.csv` doesn't exist yet.
+  kickoff time and `data/submissions.csv` was empty again afterward.
 - The golf scoring math (a perfect prediction scores 0, a fully-reversed
-  one scores 200 - the correct maximum for 20 teams).
+  one scores 200 - the correct maximum for 20 teams) and `computeCollective`'s
+  blended-table math, both cross-checked with a Python port against real data.
 
 `data/standings.csv` holds real, live-fetched `2026/27` data (not test
 data) - that season is already underway, so this repo's first real
-prediction window is `2027/28`, opening automatically next August 1st.
+*site-driven* prediction window (drag-and-drop → GitHub issue) is
+`2027/28`, opening automatically next August 1st.
+
+### `2026/27` predictions
+
+Since this site didn't exist yet when `2026/27`'s window would have been
+open, all 5 players' predictions (Kriss, Seb, Simon, Morten, Leo) were
+imported by hand into `submissions.csv` (`issue_number: manual`, same
+convention `boxing-day` uses for pre-site history) rather than submitted
+through the real form. Team names were cross-checked against
+`data/standings.csv` - all 20 valid, no duplicates, for every player.
+
+Each player supplied their own golf score at prediction time (132, 130,
+116, 126, 122) as a sanity check; recomputing against the table as it
+stood when this was imported gave different numbers (138, 124, 124, 138,
+126) for every player, by amounts too large and inconsistent to be a
+transcription error. This is expected, not a bug: the golf score is
+scored against a live, moving target, and only gameweek 1 had partially
+played by the time of import (several clubs hadn't kicked off yet) - it
+will keep drifting from whatever a player calculated by hand until the
+table settles down.

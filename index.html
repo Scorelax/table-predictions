@@ -210,6 +210,33 @@ function ordinal(n){
     return{season,seasonTeams,players,complete};
   }
 
+  // Blend every player's predicted rank per team into one composite table -
+  // "if the group voted on a table together". Rank = average predicted
+  // position across everyone who predicted that team, sorted ascending.
+  function computeCollective(scoring){
+    const{seasonTeams,players}=scoring;
+    if(!players.length)return null;
+    const sums={},counts={};
+    players.forEach(p=>{
+      p.rows.forEach(r=>{
+        if(!r.team)return;
+        const id=r.team.team_id;
+        sums[id]=(sums[id]||0)+r.predicted;
+        counts[id]=(counts[id]||0)+1;
+      });
+    });
+    const teamById={};seasonTeams.forEach(t=>{teamById[t.team_id]=t;});
+    const avgRanked=Object.keys(sums).map(id=>({
+      team:teamById[id],
+      avg:sums[id]/counts[id],
+      actual:teamById[id]?+teamById[id].position:undefined,
+    })).sort((a,b)=>a.avg-b.avg);
+    const rows=avgRanked.map((r,i)=>({predicted:i+1,avg:r.avg,team:r.team,actual:r.actual}));
+    const allKnown=rows.length===20&&rows.every(r=>r.actual!==undefined);
+    const score=allKnown?rows.reduce((s,r)=>s+Math.abs(r.predicted-r.actual),0):null;
+    return{rows,score,playerCount:players.length};
+  }
+
   function renderLiveTable(seasonTeams){
     const ranked=[...seasonTeams].sort((a,b)=>+a.position-+b.position);
     const rows=ranked.map(t=>
@@ -248,12 +275,31 @@ function ordinal(n){
       }).join("<br>");
       return `<div class="rec"><div class="cap">${p.name}${p.score!==null?` — ${p.score} pts`:''}</div><div class="det">${lines}</div></div>`;
     }).join("");
+
+    const collective=computeCollective(scoring);
+    let collectiveHTML="";
+    if(collective){
+      const lines=collective.rows.map(r=>{
+        const label=r.team?`${r.team.team_abbr}`:"?";
+        const avgTxt=` <span style="color:var(--muted)">(avg ${r.avg.toFixed(1)})</span>`;
+        if(r.actual===undefined)return `${r.predicted}. ${label}${avgTxt}`;
+        const delta=Math.abs(r.predicted-r.actual);
+        const badge=` <span class="pts ${delta===0?'win':'zero'}">${delta===0?'exact':'Δ'+delta}</span>`;
+        return `${r.predicted}. ${label}${avgTxt} <span style="color:var(--muted)">(currently ${ordinal(r.actual)})</span>${badge}`;
+      }).join("<br>");
+      collectiveHTML=`
+        <div class="subhead" style="margin-top:28px">The Collective</div>
+        <div class="det" style="color:var(--muted);margin-bottom:14px">If you averaged everyone's predicted rank per team (${collective.playerCount} predictions blended) into one table.</div>
+        <div class="rec"><div class="cap">Blended table${collective.score!==null?` — ${collective.score} pts`:''}</div><div class="det">${lines}</div></div>`;
+    }
+
     return `
       ${leaderboardHTML}
       <div class="subhead" style="margin-top:${leaderboardHTML?'28px':'0'}">Current table</div>
       ${renderLiveTable(seasonTeams)}
       <div class="subhead" style="margin-top:28px">Predictions</div>
-      ${cards}`;
+      ${cards}
+      ${collectiveHTML}`;
   }
 
   // ---------- tab: Rules ----------
@@ -285,6 +331,14 @@ function ordinal(n){
           just confirm it. To change your prediction later, rearrange the table again, copy the order text, and
           paste it into your existing issue (find it by searching
           <code>author:@me</code> in the repo's issues) to edit it — editing re-checks and re-records it automatically.
+        </div>
+      </div>
+      <div class="rec">
+        <div class="cap">The Collective</div>
+        <div class="det">
+          Every Overview/History table also shows a blended table — each team's average predicted position across
+          everyone's picks, re-ranked into a table of its own — with its own golf score. It's not a real
+          submission, just a "wisdom of the crowd" read on the group's picks.
         </div>
       </div>
     </section>`;
