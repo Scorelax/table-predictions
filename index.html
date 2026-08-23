@@ -267,10 +267,10 @@ function crestCell(team){
     const collectiveCard=collective?predTable("The Collective",collective.rows,collective.score):"";
 
     return `
-      <div class="subhead">Current table</div>
-      ${renderLiveTable(seasonTeams)}
-      <div class="subhead" style="margin-top:28px">Predictions</div>
-      <div class="predgrid">${cards}${collectiveCard}</div>`;
+      <div class="subhead">Predictions</div>
+      <div class="predgrid">${cards}${collectiveCard}</div>
+      <div class="subhead" style="margin-top:28px">PL Table</div>
+      ${renderLiveTable(seasonTeams)}`;
   }
 
   // ---------- tab: Overview ----------
