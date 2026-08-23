@@ -71,6 +71,8 @@
   .predcard th,.predcard td{padding:9px 20px 9px 0;white-space:nowrap}
   .predcard th:first-child,.predcard td:first-child{padding-left:12px;padding-right:14px;width:1%}
   .predcard td:first-child{color:var(--muted)}
+  .predcard tr.hit{background:rgba(72,230,194,.12)}
+  .predcard tr.hit td{color:var(--mint)}
   .crest{width:24px;height:24px;object-fit:contain;vertical-align:middle;margin-right:10px}
 
   a.btn,button.btn{display:inline-block;background:var(--magenta);color:#fff;border:none;border-radius:10px;padding:11px 20px;
@@ -252,7 +254,10 @@ function crestCell(team){
       return `<div class="rec"><div class="cap">No predictions submitted yet</div></div>`;
     }
     function predTable(title,rows,score){
-      const body=rows.map(r=>`<tr><td>${r.predicted}</td><td>${crestCell(r.team)}</td></tr>`).join("");
+      const body=rows.map(r=>{
+        const hit=r.actual!==undefined&&r.predicted===r.actual;
+        return `<tr${hit?' class="hit"':''}><td>${r.predicted}</td><td>${crestCell(r.team)}</td></tr>`;
+      }).join("");
       const teamHeader=score!==null&&score!==undefined?`Team — ${score} pts`:"Team";
       return `<div class="predcard"><div class="subhead">${title}</div><div class="tablewrap"><table><thead><tr><th>#</th><th>${teamHeader}</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
     }
