@@ -1,21 +1,21 @@
 season,team_id,team_name,team_abbr,position,played,won,drawn,lost,gf,ga,gd,points
-2026/27,131,Brighton & Hove Albion,BHA,1,1,1,0,0,4,0,4,3
-2026/27,1,Arsenal,ARS,2,1,1,0,0,3,0,3,3
-2026/27,130,Brentford,BRE,3,1,1,0,0,3,0,3,3
-2026/27,7,Everton,EVE,4,1,1,0,0,2,0,2,3
-2026/27,41,Hull City,HUL,5,1,1,0,0,2,0,2,3
-2026/27,8,Ipswich Town,IPS,6,1,1,0,0,2,1,1,3
-2026/27,11,Manchester City,MCI,7,1,1,0,0,2,1,1,3
-2026/27,9,Leeds United,LEE,8,1,1,0,0,1,0,1,3
-2026/27,4,Chelsea,CHE,9,0,0,0,0,0,0,0,0
+2026/27,1,Arsenal,ARS,1,1,1,0,0,3,0,3,3
+2026/27,2,Aston Villa,AVL,2,1,0,0,1,0,4,-4,0
+2026/27,127,Bournemouth,BOU,3,1,0,0,1,1,2,-1,0
+2026/27,130,Brentford,BRE,4,1,1,0,0,3,0,3,3
+2026/27,131,Brighton & Hove Albion,BHA,5,1,1,0,0,4,0,4,3
+2026/27,4,Chelsea,CHE,6,0,0,0,0,0,0,0,0
+2026/27,5,Coventry City,COV,7,1,0,0,1,0,3,-3,0
+2026/27,6,Crystal Palace,CRY,8,1,0,0,1,0,2,-2,0
+2026/27,7,Everton,EVE,9,1,1,0,0,2,0,2,3
 2026/27,34,Fulham,FUL,10,0,0,0,0,0,0,0,0
-2026/27,10,Liverpool,LIV,11,0,0,0,0,0,0,0,0
-2026/27,23,Newcastle United,NEW,12,0,0,0,0,0,0,0,0
-2026/27,127,Bournemouth,BOU,13,1,0,0,1,1,2,-1,0
-2026/27,29,Sunderland,SUN,14,1,0,0,1,1,2,-1,0
-2026/27,15,Nottingham Forest,NFO,15,1,0,0,1,0,1,-1,0
-2026/27,6,Crystal Palace,CRY,16,1,0,0,1,0,2,-2,0
-2026/27,12,Manchester United,MUN,17,1,0,0,1,0,2,-2,0
-2026/27,5,Coventry City,COV,18,1,0,0,1,0,3,-3,0
-2026/27,21,Tottenham Hotspur,TOT,19,1,0,0,1,0,3,-3,0
-2026/27,2,Aston Villa,AVL,20,1,0,0,1,0,4,-4,0
+2026/27,41,Hull City,HUL,11,1,1,0,0,2,0,2,3
+2026/27,8,Ipswich Town,IPS,12,1,1,0,0,2,1,1,3
+2026/27,9,Leeds United,LEE,13,1,1,0,0,1,0,1,3
+2026/27,10,Liverpool,LIV,14,0,0,0,0,0,0,0,0
+2026/27,11,Manchester City,MCI,15,1,1,0,0,2,1,1,3
+2026/27,12,Manchester United,MUN,16,1,0,0,1,0,2,-2,0
+2026/27,23,Newcastle United,NEW,17,0,0,0,0,0,0,0,0
+2026/27,15,Nottingham Forest,NFO,18,1,0,0,1,0,1,-1,0
+2026/27,29,Sunderland,SUN,19,1,0,0,1,1,2,-1,0
+2026/27,21,Tottenham Hotspur,TOT,20,1,0,0,1,0,3,-3,0
