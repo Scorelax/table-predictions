@@ -255,34 +255,19 @@ function crestCell(team){
     if(!players.length){
       return `<div class="rec"><div class="cap">No predictions submitted yet</div></div>`;
     }
-    const scored=players.filter(p=>p.score!==null);
-    let leaderboardHTML="";
-    if(scored.length){
-      const ranked=[...scored].sort((a,b)=>a.score-b.score);
-      let rank=0,lastScore=null;
-      const rows=ranked.map((p,i)=>{
-        if(p.score!==lastScore){rank=i+1;lastScore=p.score;}
-        return `<tr><td>${rank}</td><td>${p.name}</td><td><b>${p.score}</b></td></tr>`;
-      }).join("");
-      leaderboardHTML=`
-        <div class="subhead">Leaderboard</div>
-        <div class="det" style="color:var(--muted);margin-bottom:14px">Golf scoring — lower is better. 0 = a perfect prediction.</div>
-        <div class="tablewrap"><table><thead><tr><th>#</th><th>Player</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    }
-    function predTable(title,rows){
+    function predTable(title,rows,score){
       const body=rows.map(r=>`<tr><td>${r.predicted}</td><td>${crestCell(r.team)}</td></tr>`).join("");
-      return `<div class="predcard"><div class="subhead">${title}</div><div class="tablewrap"><table><thead><tr><th>#</th><th>Team</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+      const teamHeader=score!==null&&score!==undefined?`Team — ${score} pts`:"Team";
+      return `<div class="predcard"><div class="subhead">${title}</div><div class="tablewrap"><table><thead><tr><th>#</th><th>${teamHeader}</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
     }
 
-    const cards=players.map(p=>predTable(p.name,p.rows)).join("");
+    const cards=players.map(p=>predTable(p.name,p.rows,p.score)).join("");
 
     const collective=computeCollective(scoring);
-    const collectiveTitle=collective&&collective.score!==null?`The Collective — ${collective.score} pts`:"The Collective";
-    const collectiveCard=collective?predTable(collectiveTitle,collective.rows):"";
+    const collectiveCard=collective?predTable("The Collective",collective.rows,collective.score):"";
 
     return `
-      ${leaderboardHTML}
-      <div class="subhead" style="margin-top:${leaderboardHTML?'28px':'0'}">Current table</div>
+      <div class="subhead">Current table</div>
       ${renderLiveTable(seasonTeams)}
       <div class="subhead" style="margin-top:28px">Predictions</div>
       <div class="predgrid">${cards}${collectiveCard}</div>`;
