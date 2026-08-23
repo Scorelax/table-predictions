@@ -131,10 +131,6 @@
   <div class="panel" id="panel-overview"></div>
   <div class="panel" id="panel-edit" style="display:none"></div>
   <div class="panel" id="panel-alltime" style="display:none"></div>
-
-  <div class="subhead">History</div>
-  <div class="tabs" id="historyTabs"></div>
-  <div class="panel" id="panel-history" style="display:none"></div>
 </main>
 
 <footer><div class="wrap">Table Predictions · loaded from <b>data/standings.csv</b> + <b>data/submissions.csv</b> + <b>data/current-season.txt</b> + <b>data/deadline.txt</b></div></footer>
@@ -438,32 +434,30 @@ function crestCell(team){
     return `<div class="subhead">${selection}</div>` + renderSeasonHTML(computeSeasonStandings(selection));
   }
 
-  document.getElementById("panel-alltime").innerHTML=renderHistoryPanel("all-time");
-
+  // All-time tab: the summary, plus a season-by-season browser nested inside it
   const historySeasons=[...new Set(standings.map(t=>t.season))].filter(s=>s&&s!==currentSeason).sort().reverse();
-  document.getElementById("historyTabs").innerHTML=
-    historySeasons.map((s,i)=>`<button class="tab small${i===0?" active":""}" data-history="${s}">${s}</button>`).join("");
-  document.getElementById("panel-history").innerHTML=historySeasons.length
-    ?renderHistoryPanel(historySeasons[0])
-    :`<div class="rec"><div class="cap">No history yet</div><div class="det">Once a season wraps up and the next one opens, it'll show up here.</div></div>`;
+  const historySectionHTML=historySeasons.length?`
+    <div class="subhead" style="margin-top:28px">Browse a season</div>
+    <div class="tabs" id="historyTabs">${historySeasons.map((s,i)=>`<button class="tab small${i===0?" active":""}" data-history="${s}">${s}</button>`).join("")}</div>
+    <div id="historyContent">${renderHistoryPanel(historySeasons[0])}</div>`:"";
+  document.getElementById("panel-alltime").innerHTML=renderHistoryPanel("all-time")+historySectionHTML;
+  document.querySelectorAll("#historyTabs .tab").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll("#historyTabs .tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("historyContent").innerHTML=renderHistoryPanel(btn.dataset.history);
+    });
+  });
 
-  // ---------- tab switching (both rows share one active-state) ----------
+  // ---------- tab switching ----------
   function selectPanel(id){
     document.querySelectorAll(".panel").forEach(p=>{p.style.display=p.id===`panel-${id}`?"":"none";});
   }
   document.querySelectorAll("#tabBar .tab").forEach(btn=>{
     btn.addEventListener("click",()=>{
-      document.querySelectorAll("#tabBar .tab, #historyTabs .tab").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll("#tabBar .tab").forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
       selectPanel(btn.dataset.tab);
-    });
-  });
-  document.querySelectorAll("#historyTabs .tab").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      document.querySelectorAll("#tabBar .tab, #historyTabs .tab").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById("panel-history").innerHTML=renderHistoryPanel(btn.dataset.history);
-      selectPanel("history");
     });
   });
 })();
