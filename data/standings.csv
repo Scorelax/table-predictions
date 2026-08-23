@@ -1,21 +1,21 @@
-season,team_id,team_name,team_abbr,position,played,won,drawn,lost,gf,ga,gd,points
-2026/27,131,Brighton & Hove Albion,BHA,1,1,1,0,0,4,0,4,3
-2026/27,1,Arsenal,ARS,2,1,1,0,0,3,0,3,3
-2026/27,130,Brentford,BRE,3,1,1,0,0,3,0,3,3
-2026/27,7,Everton,EVE,4,1,1,0,0,2,0,2,3
-2026/27,41,Hull City,HUL,5,1,1,0,0,2,0,2,3
-2026/27,8,Ipswich Town,IPS,6,1,1,0,0,2,1,1,3
-2026/27,11,Manchester City,MCI,7,1,1,0,0,2,1,1,3
-2026/27,9,Leeds United,LEE,8,1,1,0,0,1,0,1,3
-2026/27,4,Chelsea,CHE,9,0,0,0,0,0,0,0,0
-2026/27,34,Fulham,FUL,10,0,0,0,0,0,0,0,0
-2026/27,10,Liverpool,LIV,11,0,0,0,0,0,0,0,0
-2026/27,23,Newcastle United,NEW,12,0,0,0,0,0,0,0,0
-2026/27,127,Bournemouth,BOU,13,1,0,0,1,1,2,-1,0
-2026/27,29,Sunderland,SUN,14,1,0,0,1,1,2,-1,0
-2026/27,15,Nottingham Forest,NFO,15,1,0,0,1,0,1,-1,0
-2026/27,6,Crystal Palace,CRY,16,1,0,0,1,0,2,-2,0
-2026/27,12,Manchester United,MUN,17,1,0,0,1,0,2,-2,0
-2026/27,5,Coventry City,COV,18,1,0,0,1,0,3,-3,0
-2026/27,21,Tottenham Hotspur,TOT,19,1,0,0,1,0,3,-3,0
-2026/27,2,Aston Villa,AVL,20,1,0,0,1,0,4,-4,0
+season,team_id,team_name,team_abbr,team_code,position,played,won,drawn,lost,gf,ga,gd,points
+2026/27,131,Brighton & Hove Albion,BHA,t36,1,1,1,0,0,4,0,4,3
+2026/27,1,Arsenal,ARS,t3,2,1,1,0,0,3,0,3,3
+2026/27,130,Brentford,BRE,t94,3,1,1,0,0,3,0,3,3
+2026/27,7,Everton,EVE,t11,4,1,1,0,0,2,0,2,3
+2026/27,41,Hull City,HUL,t88,5,1,1,0,0,2,0,2,3
+2026/27,8,Ipswich Town,IPS,t40,6,1,1,0,0,2,1,1,3
+2026/27,11,Manchester City,MCI,t43,7,1,1,0,0,2,1,1,3
+2026/27,9,Leeds United,LEE,t2,8,1,1,0,0,1,0,1,3
+2026/27,10,Liverpool,LIV,t14,9,1,0,1,0,2,2,0,1
+2026/27,23,Newcastle United,NEW,t4,10,1,0,1,0,2,2,0,1
+2026/27,4,Chelsea,CHE,t8,11,0,0,0,0,0,0,0,0
+2026/27,34,Fulham,FUL,t54,12,0,0,0,0,0,0,0,0
+2026/27,127,Bournemouth,BOU,t91,13,1,0,0,1,1,2,-1,0
+2026/27,29,Sunderland,SUN,t56,14,1,0,0,1,1,2,-1,0
+2026/27,15,Nottingham Forest,NFO,t17,15,1,0,0,1,0,1,-1,0
+2026/27,6,Crystal Palace,CRY,t31,16,1,0,0,1,0,2,-2,0
+2026/27,12,Manchester United,MUN,t1,17,1,0,0,1,0,2,-2,0
+2026/27,5,Coventry City,COV,t9,18,1,0,0,1,0,3,-3,0
+2026/27,21,Tottenham Hotspur,TOT,t6,19,1,0,0,1,0,3,-3,0
+2026/27,2,Aston Villa,AVL,t7,20,1,0,0,1,0,4,-4,0

@@ -71,6 +71,7 @@ and the live table (refreshed daily).
 | `season` | e.g. `2027/28` |
 | `team_id` | pulselive's team id — stable across seasons |
 | `team_name` / `team_abbr` | e.g. `Arsenal` / `ARS` |
+| `team_code` | the club's Opta id (e.g. `t3`) — builds its crest URL: `https://resources.premierleague.com/premierleague/badges/50/t3.png` |
 | `position` | 1–20; alphabetical rank at 0-played, real table position once matches are played |
 | `played`, `won`, `drawn`, `lost`, `gf`, `ga`, `gd`, `points` | standard table columns |
 

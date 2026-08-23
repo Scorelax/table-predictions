@@ -86,6 +86,22 @@ def replace_season_block(csv_path, header, season, new_rows):
         writer.writerows(new_rows)
 
 
+def fetch_opta_codes():
+    """team_id -> opta code ("t3"), used to build crest URLs client-side:
+    https://resources.premierleague.com/premierleague/badges/50/t3.png"""
+    codes = {}
+    for page in range(0, 10):
+        data = fetch_json(f"https://footballapi.pulselive.com/football/teams?comps=1&altIds=true&page={page}&pageSize=60")
+        content = data.get("content", [])
+        if not content:
+            break
+        for team in content:
+            opta = team.get("altIds", {}).get("opta")
+            if opta:
+                codes[int(team["id"])] = opta
+    return codes
+
+
 def fetch_first_kickoff(comp_season_id):
     fixtures = fetch_json(
         f"https://footballapi.pulselive.com/football/fixtures?comps=1"
@@ -112,8 +128,10 @@ def main():
     if len(entries) != 20:
         sys.exit(f"ERROR: expected 20 teams for {season}, got {len(entries)}. Has the season's club list been confirmed?")
 
-    STANDINGS_HEADER = ["season", "team_id", "team_name", "team_abbr", "position",
+    STANDINGS_HEADER = ["season", "team_id", "team_name", "team_abbr", "team_code", "position",
                         "played", "won", "drawn", "lost", "gf", "ga", "gd", "points"]
+
+    opta_codes = fetch_opta_codes()
 
     # Alphabetical by team name for the initial seed - matches/played is 0 for
     # everyone pre-season anyway, so "position" here is just alphabetical rank.
@@ -122,8 +140,9 @@ def main():
     for i, e in enumerate(teams_sorted, start=1):
         club = e["team"].get("club", {})
         o = e["overall"]
+        team_id = int(e["team"]["id"])
         rows.append([
-            season, int(e["team"]["id"]), e["team"]["name"], club.get("abbr", ""),
+            season, team_id, e["team"]["name"], club.get("abbr", ""), opta_codes.get(team_id, ""),
             i, o["played"], o["won"], o["drawn"], o["lost"], o["goalsFor"], o["goalsAgainst"],
             o["goalsDifference"], o["points"],
         ])

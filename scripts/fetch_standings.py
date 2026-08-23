@@ -29,6 +29,22 @@ def fetch_json(url):
         return json.load(resp)
 
 
+def fetch_opta_codes():
+    """team_id -> opta code ("t3"), used to build crest URLs client-side:
+    https://resources.premierleague.com/premierleague/badges/50/t3.png"""
+    codes = {}
+    for page in range(0, 10):
+        data = fetch_json(f"https://footballapi.pulselive.com/football/teams?comps=1&altIds=true&page={page}&pageSize=60")
+        content = data.get("content", [])
+        if not content:
+            break
+        for team in content:
+            opta = team.get("altIds", {}).get("opta")
+            if opta:
+                codes[int(team["id"])] = opta
+    return codes
+
+
 def replace_season_block(csv_path, header, season, new_rows):
     existing = []
     if csv_path.exists():
@@ -63,15 +79,18 @@ def main():
         print(f"WARNING: expected 20 teams, got {len(entries)} - leaving standings.csv untouched.")
         return
 
-    STANDINGS_HEADER = ["season", "team_id", "team_name", "team_abbr", "position",
+    STANDINGS_HEADER = ["season", "team_id", "team_name", "team_abbr", "team_code", "position",
                         "played", "won", "drawn", "lost", "gf", "ga", "gd", "points"]
+
+    opta_codes = fetch_opta_codes()
 
     rows = []
     for e in sorted(entries, key=lambda e: e["position"]):
         club = e["team"].get("club", {})
         o = e["overall"]
+        team_id = int(e["team"]["id"])
         rows.append([
-            season, int(e["team"]["id"]), e["team"]["name"], club.get("abbr", ""),
+            season, team_id, e["team"]["name"], club.get("abbr", ""), opta_codes.get(team_id, ""),
             e["position"], o["played"], o["won"], o["drawn"], o["lost"], o["goalsFor"], o["goalsAgainst"],
             o["goalsDifference"], o["points"],
         ])
