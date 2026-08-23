@@ -1,0 +1,117 @@
+# Table Predictions
+
+**Live site:** https://scorelax.github.io/table-predictions/
+
+A yearly pool where everyone predicts the Premier League's final table order.
+Sibling site to [`boxing-day`](https://github.com/Scorelax/boxing-day) and
+[`fpl-draft-stats`](https://github.com/Scorelax/fpl-draft-stats) — same
+zero-backend, GitHub-only architecture, same visual design, linked together
+via the shared header nav.
+
+## The yearly cycle
+
+1. **Aug 1, 06:00 UTC — `fetch_new_season.py`.** Fetches this season's 20
+   Premier League clubs from `footballapi.pulselive.com`, seeds
+   `data/standings.csv` with them (0 played, alphabetical order), points
+   `data/current-season.txt` at the new season, and stores the season's
+   first kickoff time in `data/deadline.txt`.
+2. **Every day, 00:00 UTC — `fetch_standings.py`.** Refreshes the current
+   season's block in `data/standings.csv` with the real table, and
+   re-derives `data/deadline.txt` (self-correcting if the PL reschedules
+   opening weekend for TV between Aug 1 and kickoff).
+3. **On issue open/edit — `process_submission.py`.** Validates a prediction
+   issue (see below) and records it — or comments back with what's wrong.
+   Rejects anything after `data/deadline.txt`'s timestamp.
+
+There's no separate "archive" step like `boxing-day` has. `data/standings.csv`
+accumulates forever keyed by `season`, so the moment next year's Aug 1 job
+rolls `current-season.txt` forward, whatever was last fetched for the
+previous season simply stops being touched and stands as that season's
+permanent final table — no explicit close/clear needed.
+
+## Submitting a prediction
+
+GitHub Issue Forms can't do drag-and-drop, so submitting is two steps:
+
+1. On the site's **Edit form** tab, drag the 20 teams (or use the ↑/↓
+   buttons) into your predicted final order.
+2. Click **Submit on GitHub** — this opens a pre-filled issue (via a
+   [query-param-prefilled issue form URL](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue#creating-an-issue-from-a-url-query)),
+   already carrying your name and order. Just hit Create.
+
+To change a prediction before the deadline: rearrange the table again, hit
+**Copy order text**, then paste it into the `order` field of your existing
+issue (found via `author:@me` in the repo's issues, linked from the Edit
+form tab) and save the edit — that re-triggers validation and re-records it.
+
+## Scoring — golf rules
+
+For each team: `abs(predicted_position - actual_position)`. Sum across all
+20 teams. Lower is better; **0 is a perfect table**. Computed client-side
+in `index.html` (`computeSeasonStandings`), continuously, from whatever
+`data/standings.csv` currently shows — which is what makes the Overview
+tab "live": it's exactly whatever the last daily fetch left behind.
+
+## `data/standings.csv` schema
+
+One file, two jobs: it's both the season's 20-team roster (seeded Aug 1)
+and the live table (refreshed daily).
+
+| column | meaning |
+|---|---|
+| `season` | e.g. `2027/28` |
+| `team_id` | pulselive's team id — stable across seasons |
+| `team_name` / `team_abbr` | e.g. `Arsenal` / `ARS` |
+| `position` | 1–20; alphabetical rank at 0-played, real table position once matches are played |
+| `played`, `won`, `drawn`, `lost`, `gf`, `ga`, `gd`, `points` | standard table columns |
+
+A season counts as "complete" (eligible for the All-time tab) once every
+row for it shows `played >= 38` — derived, no manual flag needed.
+
+## `data/submissions.csv` schema
+
+One row per **player per season** (not per-answer like `boxing-day`, since
+there's only one thing being predicted here — the whole table).
+
+| column | meaning |
+|---|---|
+| `season` | e.g. `2027/28` |
+| `player_name` | as typed in the "Your name" field |
+| `submitted_at` | ISO timestamp, updates on every valid edit |
+| `order` | 20 `team_id`s joined with `;`, position 1 (predicted champion) first |
+| `issue_number` | which issue this came from — editing that issue replaces this row, doesn't duplicate it |
+
+## `data/deadline.txt` and `data/comp-season-id.txt`
+
+`deadline.txt`: ISO timestamp of the current season's first kickoff —
+`process_submission.py`'s hard cutoff. `comp-season-id.txt`: pulselive's
+internal id for the current compSeason (looked up once by matching the
+season's label string against `/football/competitions/1/compseasons`), so
+`fetch_standings.py` doesn't have to re-resolve it every single day.
+
+## Live match data
+
+Same `footballapi.pulselive.com` source the `boxing-day` project uses —
+undocumented, unofficial, no API key required. `/football/standings` gives
+the full 20-team table (position, played/won/drawn/lost, goal difference,
+points) for a given `compSeasons` id in one call; `/football/fixtures`
+gives kickoff times. Since it's unofficial it could change or get blocked
+without warning — low risk for a script that runs once a day, but worth
+knowing.
+
+## Status
+
+Built and locally verified: both fetch scripts against the real live
+2026/27 season (20 teams, real standings, real deadline correctly detected
+as already passed since that season kicked off before this was built), the
+issue-body parser against a realistic generated submission, and the golf
+scoring math (a perfect prediction scores 0, a fully-reversed one scores
+200 — the correct maximum for 20 teams). `data/standings.csv` in this repo
+currently holds real, live-fetched `2026/27` data (not test data) — the
+season is already underway, so this repo's actual first live prediction
+window is `2027/28`, opening automatically next August 1st.
+
+Not yet tested end-to-end on GitHub's infrastructure: a real issue
+submission through `process-submission.yml`, and a real scheduled run of
+either cron. Worth a manual `workflow_dispatch` test run of each before
+relying on the automatic schedule.

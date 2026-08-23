@@ -1,0 +1,40 @@
+name: Open a new Table Predictions season
+
+on:
+  schedule:
+    - cron: "0 6 1 8 *"   # 06:00 UTC on Aug 1st every year
+  workflow_dispatch:          # manual runs from the Actions tab, e.g. for testing
+    inputs:
+      year:
+        description: "Override year (for testing only - leave blank to use the current year)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch the season's 20 teams and open the cycle
+        env:
+          TABLE_PREDICTIONS_YEAR: ${{ github.event.inputs.year }}
+        run: python scripts/fetch_new_season.py
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- data/standings.csv data/current-season.txt data/comp-season-id.txt data/deadline.txt; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/standings.csv data/current-season.txt data/comp-season-id.txt data/deadline.txt
+          git commit -m "Open new season: $(date -u +%Y)"
+          git push

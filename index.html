@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Table Predictions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#140720;--ink-2:#1c0d2e;--panel:#231338;--panel-2:#2c1945;
+    --line:rgba(255,255,255,.08);--line-strong:rgba(255,255,255,.16);
+    --magenta:#ff2e7e;--gold:#ffc94d;--mint:#48e6c2;
+    --text:#f4ecfa;--muted:#a58ebe;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:
+      radial-gradient(1200px 600px at 82% -10%, rgba(255,46,126,.15), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(72,230,194,.09), transparent 55%),
+      var(--ink);
+    color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.5;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 24px}
+  .disp{font-family:'Archivo',sans-serif;font-weight:900;letter-spacing:-.02em;line-height:.95}
+  .eyebrow{font-family:'Archivo',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--muted)}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:linear-gradient(var(--ink),rgba(20,7,32,.55));border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;justify-content:center;height:62px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px}
+  .bar .dot{width:12px;height:12px;border-radius:3px;background:var(--magenta);box-shadow:0 0 16px var(--magenta)}
+  .toolnav{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .tool-link{font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;color:var(--muted);text-decoration:none;transition:color .2s}
+  .tool-link:hover{color:var(--text)}
+
+  .hero{padding:56px 0 24px}
+  .hero .eyebrow{margin-bottom:16px}
+  .hero h1{font-size:clamp(38px,8vw,80px);text-transform:uppercase}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
+  .tabs.main{margin-top:28px}
+  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:100px;
+    padding:9px 20px;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+  .tab:hover{color:var(--text);border-color:var(--line-strong)}
+  .tab.active{background:var(--magenta);border-color:var(--magenta);color:#fff}
+  .tab.small{padding:7px 16px;font-size:12px}
+
+  .panel{padding-bottom:40px}
+  .subhead{font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;
+    letter-spacing:.06em;color:var(--muted);margin:0 0 14px}
+  .head h2{font-size:clamp(22px,4vw,32px);text-transform:uppercase;margin-bottom:20px}
+  section.block{margin-bottom:36px}
+
+  .tablewrap{border:1px solid var(--line);border-radius:16px;overflow:hidden;overflow-x:auto;margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:480px}
+  thead th{background:var(--ink-2);text-align:left;padding:12px;font-family:'Archivo',sans-serif;
+    font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  tbody td{padding:12px;border-top:1px solid var(--line);white-space:nowrap}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .pts{font-size:11px;font-weight:800;margin-left:5px}
+  .pts.win{color:var(--mint)}
+  .pts.zero{color:var(--muted)}
+
+  .rec{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:20px;margin-bottom:16px}
+  .rec .cap{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .rec .det{font-size:13.5px;color:var(--muted);line-height:1.9}
+
+  a.btn,button.btn{display:inline-block;background:var(--magenta);color:#fff;border:none;border-radius:10px;padding:11px 20px;
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.04em;
+    text-decoration:none;margin-top:10px;cursor:pointer}
+  a.btn:hover,button.btn:hover{opacity:.88}
+  a.btn.secondary,button.btn.secondary{background:var(--panel-2);border:1px solid var(--line-strong)}
+  a.btn.disabled{opacity:.35;pointer-events:none}
+
+  input[type=text]{width:100%;max-width:340px;background:var(--panel);color:var(--text);
+    border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;font-size:14px}
+
+  .draglist{list-style:none;max-width:560px}
+  .dragrow{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:9px 14px;margin-bottom:6px;cursor:grab;transition:opacity .15s}
+  .dragrow.dragging{opacity:.35}
+  .dragrow .rank{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;color:var(--muted);width:26px;flex:none}
+  .dragrow .name{flex:1;font-weight:600;font-size:14px}
+  .dragrow .abbr{color:var(--muted);font-size:12.5px}
+  .movebtns{display:flex;gap:4px;flex:none}
+  button.move{background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);border-radius:6px;
+    width:26px;height:26px;cursor:pointer;font-size:12px;line-height:1}
+  button.move:hover{border-color:var(--magenta)}
+  button.move:disabled{opacity:.3;cursor:default}
+
+  pre.orderpreview{background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:14px;
+    font-size:12.5px;color:var(--muted);max-width:200px;white-space:pre-wrap}
+
+  footer{border-top:1px solid var(--line);margin-top:20px;padding:24px 0 50px;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="toolnav">
+      <a class="tool-link" href="https://scorelax.github.io/fpl-draft-stats/">FANTASYPL DRAFT</a>
+      <a class="tool-link" href="https://scorelax.github.io/boxing-day/">BOXING DAY</a>
+      <div class="brand" aria-current="page"><span class="dot"></span> TABLE PREDICTIONS</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow" id="yearLabel">Loading…</div>
+    <h1 class="disp">Table Predictions</h1>
+  </section>
+
+  <div class="tabs main" id="tabBar">
+    <button class="tab active" data-tab="rules">Rules</button>
+    <button class="tab" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="edit">Edit form</button>
+  </div>
+
+  <div class="panel" id="panel-rules"></div>
+  <div class="panel" id="panel-overview" style="display:none"></div>
+  <div class="panel" id="panel-edit" style="display:none"></div>
+
+  <div class="subhead">History</div>
+  <div class="tabs" id="historyTabs"></div>
+  <div class="panel" id="panel-history" style="display:none"></div>
+</main>
+
+<footer><div class="wrap">Table Predictions · loaded from <b>data/standings.csv</b> + <b>data/submissions.csv</b> + <b>data/current-season.txt</b> + <b>data/deadline.txt</b></div></footer>
+
+<script>
+"use strict";
+const GH_REPO="Scorelax/table-predictions";
+const SUBMISSION_LABEL="table-prediction-submission";
+
+function parseCSV(txt){
+  const lines=txt.trim().split(/\r?\n/);
+  if(!lines[0])return[];
+  const head=lines[0].split(",");
+  return lines.slice(1).filter(l=>l.length).map(l=>{
+    const c=[];let cur="",inQ=false;
+    for(let i=0;i<l.length;i++){const ch=l[i];
+      if(ch==='"'){inQ=!inQ;}
+      else if(ch===","&&!inQ){c.push(cur);cur="";}
+      else cur+=ch;
+    }
+    c.push(cur);
+    const o={};head.forEach((h,i)=>o[h]=c[i]!==undefined?c[i]:"");return o;
+  });
+}
+async function loadCSV(path){
+  const res=await fetch(path);
+  if(!res.ok)throw new Error(`Failed to load ${path} (HTTP ${res.status})`);
+  return parseCSV(await res.text());
+}
+async function loadCSVSoft(path){
+  try{return await loadCSV(path);}
+  catch(err){console.warn(`${path} not available yet:`,err.message);return[];}
+}
+async function loadTextSoft(path){
+  try{const res=await fetch(path);if(!res.ok)throw new Error(`HTTP ${res.status}`);return(await res.text()).trim();}
+  catch(err){console.warn(`${path} not available yet:`,err.message);return"";}
+}
+function ordinal(n){
+  const s=["th","st","nd","rd"],v=n%100;
+  return n+(s[(v-20)%10]||s[v]||s[0]);
+}
+
+(async function(){
+  let standings;
+  try{
+    standings=await loadCSV("data/standings.csv");
+  }catch(err){
+    document.querySelector("main").innerHTML=`<div class="rec" style="margin:60px 0"><div class="cap">Couldn't load data</div><div class="det">${err.message}<br><br>If you opened this file directly from disk, run a local server instead — e.g. <code>python -m http.server</code> — then open the printed http://localhost address.</div></div>`;
+    return;
+  }
+  const [submissions,currentSeason,deadlineStr]=await Promise.all([
+    loadCSVSoft("data/submissions.csv"),
+    loadTextSoft("data/current-season.txt"),
+    loadTextSoft("data/deadline.txt"),
+  ]);
+
+  const currentTeams=standings.filter(t=>t.season===currentSeason).sort((a,b)=>+a.position-+b.position);
+  const deadline=deadlineStr?new Date(deadlineStr):null;
+  const deadlinePassed=deadline?new Date()>deadline:false;
+
+  document.getElementById("yearLabel").textContent=currentSeason
+    ?`Table Predictions ${currentSeason}`
+    :`Yearly prediction pool`;
+
+  // ---------- shared: per-season scoring (used by Overview and History tabs) ----------
+  function computeSeasonStandings(season){
+    const seasonTeams=standings.filter(t=>t.season===season);
+    const seasonSubs=submissions.filter(s=>s.season===season);
+    const teamById={};seasonTeams.forEach(t=>{teamById[t.team_id]=t;});
+    const complete=seasonTeams.length===20&&seasonTeams.every(t=>+t.played>=38);
+    const players=seasonSubs.map(s=>{
+      const ids=s.order.split(";").filter(Boolean);
+      const rows=ids.map((id,i)=>({
+        predicted:i+1,
+        team:teamById[id],
+        actual:teamById[id]?+teamById[id].position:undefined,
+      }));
+      const allKnown=rows.length===20&&rows.every(r=>r.actual!==undefined);
+      const score=allKnown?rows.reduce((s,r)=>s+Math.abs(r.predicted-r.actual),0):null;
+      return{name:s.player_name,rows,score};
+    });
+    return{season,seasonTeams,players,complete};
+  }
+
+  function renderLiveTable(seasonTeams){
+    const ranked=[...seasonTeams].sort((a,b)=>+a.position-+b.position);
+    const rows=ranked.map(t=>
+      `<tr><td>${t.position}</td><td>${t.team_name} <span style="color:var(--muted)">(${t.team_abbr})</span></td>`+
+      `<td>${t.played}</td><td>${t.won}</td><td>${t.drawn}</td><td>${t.lost}</td><td>${t.gd}</td><td><b>${t.points}</b></td></tr>`
+    ).join("");
+    return `<div class="tablewrap"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function renderSeasonHTML(scoring){
+    const{seasonTeams,players}=scoring;
+    if(!players.length){
+      return `<div class="rec"><div class="cap">No predictions submitted yet</div></div>`;
+    }
+    const scored=players.filter(p=>p.score!==null);
+    let leaderboardHTML="";
+    if(scored.length){
+      const ranked=[...scored].sort((a,b)=>a.score-b.score);
+      let rank=0,lastScore=null;
+      const rows=ranked.map((p,i)=>{
+        if(p.score!==lastScore){rank=i+1;lastScore=p.score;}
+        return `<tr><td>${rank}</td><td>${p.name}</td><td><b>${p.score}</b></td></tr>`;
+      }).join("");
+      leaderboardHTML=`
+        <div class="subhead">Leaderboard</div>
+        <div class="det" style="color:var(--muted);margin-bottom:14px">Golf scoring — lower is better. 0 = a perfect prediction.</div>
+        <div class="tablewrap"><table><thead><tr><th>#</th><th>Player</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    const cards=players.map(p=>{
+      const lines=p.rows.map(r=>{
+        const label=r.team?`${r.team.team_abbr}`:"?";
+        if(r.actual===undefined)return `${r.predicted}. ${label}`;
+        const delta=Math.abs(r.predicted-r.actual);
+        const badge=` <span class="pts ${delta===0?'win':'zero'}">${delta===0?'exact':'Δ'+delta}</span>`;
+        return `${r.predicted}. ${label} <span style="color:var(--muted)">(currently ${ordinal(r.actual)})</span>${badge}`;
+      }).join("<br>");
+      return `<div class="rec"><div class="cap">${p.name}${p.score!==null?` — ${p.score} pts`:''}</div><div class="det">${lines}</div></div>`;
+    }).join("");
+    return `
+      ${leaderboardHTML}
+      <div class="subhead" style="margin-top:${leaderboardHTML?'28px':'0'}">Current table</div>
+      ${renderLiveTable(seasonTeams)}
+      <div class="subhead" style="margin-top:28px">Predictions</div>
+      ${cards}`;
+  }
+
+  // ---------- tab: Rules ----------
+  document.getElementById("panel-rules").innerHTML=`
+    <section class="block">
+      <div class="head"><h2 class="disp">How it works</h2></div>
+      <div class="rec">
+        <div class="cap">The yearly cycle</div>
+        <div class="det">
+          Every August 1st, this year's 20 Premier League clubs are fetched automatically and a new prediction
+          window opens. Predictions can be made or changed right up until the season's first match kicks off —
+          after that, whatever's recorded stands for the whole season. The live table then refreshes once a day
+          at 00:00 UTC, so the Overview tab tracks everyone's score as the season actually unfolds.
+        </div>
+      </div>
+      <div class="rec">
+        <div class="cap">Scoring — golf rules</div>
+        <div class="det">
+          For each team, your score is the distance between where you predicted it and where it actually finished
+          (or currently sits) — <b>0</b> for an exact placement, <b>+1</b> for every position off. Your total is the
+          sum across all 20 teams. Lower is better; 0 is a perfect table.
+        </div>
+      </div>
+      <div class="rec">
+        <div class="cap">Submitting</div>
+        <div class="det">
+          GitHub Issue Forms can't do drag-and-drop, so submitting is two steps: arrange the table on the
+          <b>Edit form</b> tab, then click Submit — that opens a GitHub issue pre-filled with your order, and you
+          just confirm it. To change your prediction later, rearrange the table again, copy the order text, and
+          paste it into your existing issue (find it by searching
+          <code>author:@me</code> in the repo's issues) to edit it — editing re-checks and re-records it automatically.
+        </div>
+      </div>
+    </section>`;
+
+  // ---------- tab: Overview ----------
+  function renderOverview(){
+    if(!currentSeason){
+      return `<div class="rec"><div class="cap">Not open yet</div><div class="det">Predictions open August 1st, once this season's clubs are confirmed.</div></div>`;
+    }
+    const deadlineHTML=deadline
+      ?`<div class="det" style="color:var(--muted);margin-bottom:20px">${deadlinePassed?'Predictions are closed — kicked off':'Predictions close at kickoff:'} ${deadline.toLocaleString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"UTC"})} UTC.</div>`
+      :"";
+    return deadlineHTML+renderSeasonHTML(computeSeasonStandings(currentSeason));
+  }
+  document.getElementById("panel-overview").innerHTML=renderOverview();
+
+  // ---------- tab: Edit form (drag-and-drop) ----------
+  function renderEdit(){
+    if(!currentSeason||!currentTeams.length){
+      return `<div class="rec"><div class="cap">Not open yet</div><div class="det">Predictions open August 1st, once this season's clubs are confirmed.</div></div>`;
+    }
+    if(deadlinePassed){
+      return `<div class="rec"><div class="cap">Predictions closed</div><div class="det">The season kicked off, so new or changed predictions can no longer be recorded. Check the Overview tab for how everyone's doing.</div></div>`;
+    }
+    return `
+      <section class="block">
+        <div class="head"><h2 class="disp">Predict the table</h2></div>
+        <div class="det" style="color:var(--muted);margin-bottom:16px">Drag teams (or use the arrows) into your predicted final order for ${currentSeason}, 1st place at the top.</div>
+        <label style="display:block;margin-bottom:16px">
+          <div class="det" style="margin-bottom:6px">Your name</div>
+          <input type="text" id="playerNameInput" placeholder="e.g. Kriss">
+        </label>
+        <ol class="draglist" id="dragList"></ol>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-top:20px">
+          <div>
+            <a class="btn disabled" id="submitLink" target="_blank" rel="noopener">Submit on GitHub</a><br>
+            <button class="btn secondary" id="copyOrderBtn" type="button">Copy order text</button>
+          </div>
+          <div>
+            <div class="det" style="margin-bottom:4px">Preview of what gets submitted:</div>
+            <pre class="orderpreview" id="orderPreview"></pre>
+          </div>
+        </div>
+        <div class="det" style="color:var(--muted);margin-top:16px">
+          Editing an existing prediction? Rearrange above, hit "Copy order text", then paste it into the
+          <code>order</code> field of your existing issue — find it via
+          <a href="https://github.com/${GH_REPO}/issues?q=is%3Aissue+author%3A%40me+label%3A${SUBMISSION_LABEL}" target="_blank" rel="noopener">your submissions on GitHub</a>.
+        </div>
+      </section>`;
+  }
+  document.getElementById("panel-edit").innerHTML=renderEdit();
+
+  if(currentSeason&&currentTeams.length&&!deadlinePassed){
+    let order=currentTeams.slice().sort((a,b)=>a.team_name.localeCompare(b.team_name));
+
+    function renderDragList(){
+      const list=document.getElementById("dragList");
+      list.innerHTML=order.map((t,i)=>`
+        <li class="dragrow" draggable="true" data-idx="${i}">
+          <span class="rank">${i+1}</span>
+          <span class="name">${t.team_name} <span class="abbr">(${t.team_abbr})</span></span>
+          <span class="movebtns">
+            <button type="button" class="move" data-dir="up" data-idx="${i}" ${i===0?"disabled":""}>&uarr;</button>
+            <button type="button" class="move" data-dir="down" data-idx="${i}" ${i===order.length-1?"disabled":""}>&darr;</button>
+          </span>
+        </li>`).join("");
+      updateSubmitLink();
+    }
+
+    function moveItem(from,to){
+      const[item]=order.splice(from,1);
+      order.splice(to,0,item);
+      renderDragList();
+    }
+
+    function updateSubmitLink(){
+      const name=document.getElementById("playerNameInput").value.trim();
+      const orderText=order.map(t=>t.team_abbr).join("\n");
+      document.getElementById("orderPreview").textContent=`Name: ${name||"(enter your name)"}\n\n${orderText}`;
+      const params=new URLSearchParams();
+      params.set("template","table-prediction-submission.yml");
+      params.set("title",`[Table Predictions] ${name}`);
+      params.set("labels",SUBMISSION_LABEL);
+      params.set("player_name",name);
+      params.set("order",orderText);
+      const link=document.getElementById("submitLink");
+      link.href=`https://github.com/${GH_REPO}/issues/new?${params.toString()}`;
+      link.classList.toggle("disabled",!name);
+    }
+
+    const dragList=document.getElementById("dragList");
+    dragList.addEventListener("click",e=>{
+      const btn=e.target.closest("button.move");
+      if(!btn)return;
+      const idx=+btn.dataset.idx;
+      const to=btn.dataset.dir==="up"?idx-1:idx+1;
+      if(to<0||to>=order.length)return;
+      moveItem(idx,to);
+    });
+    let dragSrcIdx=null;
+    dragList.addEventListener("dragstart",e=>{
+      const li=e.target.closest("li.dragrow");
+      if(!li)return;
+      dragSrcIdx=+li.dataset.idx;
+      li.classList.add("dragging");
+    });
+    dragList.addEventListener("dragend",e=>{
+      const li=e.target.closest("li.dragrow");
+      if(li)li.classList.remove("dragging");
+    });
+    dragList.addEventListener("dragover",e=>e.preventDefault());
+    dragList.addEventListener("drop",e=>{
+      e.preventDefault();
+      const li=e.target.closest("li.dragrow");
+      if(!li||dragSrcIdx===null)return;
+      const toIdx=+li.dataset.idx;
+      if(toIdx!==dragSrcIdx)moveItem(dragSrcIdx,toIdx);
+      dragSrcIdx=null;
+    });
+    document.getElementById("playerNameInput").addEventListener("input",updateSubmitLink);
+    document.getElementById("copyOrderBtn").addEventListener("click",async()=>{
+      const btn=document.getElementById("copyOrderBtn");
+      try{
+        await navigator.clipboard.writeText(order.map(t=>t.team_abbr).join("\n"));
+        const original=btn.textContent;
+        btn.textContent="Copied!";
+        setTimeout(()=>{btn.textContent=original;},1500);
+      }catch(err){console.warn("Clipboard copy failed:",err.message);}
+    });
+
+    renderDragList();
+  }
+
+  // ---------- History: All-time + one tab per completed season ----------
+  function renderHistoryPanel(selection){
+    if(selection==="all-time"){
+      const seasons=[...new Set(standings.map(t=>t.season))]
+        .filter(s=>s&&standings.filter(t=>t.season===s).every(t=>+t.played>=38))
+        .filter(s=>submissions.some(x=>x.season===s));
+      if(!seasons.length){
+        return `<div class="rec"><div class="cap">All-time</div><div class="det">No completed seasons yet — check back once a season finishes.</div></div>`;
+      }
+      const grand={},seasonsPlayed={};
+      seasons.forEach(season=>{
+        computeSeasonStandings(season).players.forEach(p=>{
+          if(p.score===null)return;
+          grand[p.name]=(grand[p.name]||0)+p.score;
+          seasonsPlayed[p.name]=(seasonsPlayed[p.name]||0)+1;
+        });
+      });
+      const names=Object.keys(grand).sort((a,b)=>grand[a]-grand[b]);
+      let rank=0,lastScore=null;
+      const rows=names.map((n,i)=>{
+        if(grand[n]!==lastScore){rank=i+1;lastScore=grand[n];}
+        return `<tr><td>${rank}</td><td>${n}</td><td><b>${grand[n]}</b></td><td>${seasonsPlayed[n]}</td></tr>`;
+      }).join("");
+      return `
+        <div class="subhead">All-time standings</div>
+        <div class="det" style="color:var(--muted);margin-bottom:14px">Sum of golf scores across every completed season (${seasons.length} so far) — lower is better.</div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>#</th><th>Player</th><th>Total score</th><th>Seasons</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>`;
+    }
+    return `<div class="subhead">${selection}</div>` + renderSeasonHTML(computeSeasonStandings(selection));
+  }
+
+  const historySeasons=[...new Set(standings.map(t=>t.season))].filter(s=>s&&s!==currentSeason).sort().reverse();
+  document.getElementById("historyTabs").innerHTML=
+    `<button class="tab small" data-history="all-time">All-time</button>` +
+    historySeasons.map(s=>`<button class="tab small" data-history="${s}">${s}</button>`).join("");
+  document.getElementById("panel-history").innerHTML=renderHistoryPanel("all-time");
+
+  // ---------- tab switching (both rows share one active-state) ----------
+  function selectPanel(id){
+    document.querySelectorAll(".panel").forEach(p=>{p.style.display=p.id===`panel-${id}`?"":"none";});
+  }
+  document.querySelectorAll("#tabBar .tab").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll("#tabBar .tab, #historyTabs .tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      selectPanel(btn.dataset.tab);
+    });
+  });
+  document.querySelectorAll("#historyTabs .tab").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll("#tabBar .tab, #historyTabs .tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("panel-history").innerHTML=renderHistoryPanel(btn.dataset.history);
+      selectPanel("history");
+    });
+  });
+})();
+</script>
+</body>
+</html>

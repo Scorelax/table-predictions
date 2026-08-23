@@ -1,0 +1,31 @@
+name: "Table Predictions submission"
+description: "Submit your predicted final Premier League table"
+title: "[Table Predictions] "
+labels: ["table-prediction-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Don't fill this in by hand - use the drag-and-drop table on the site's
+        Edit form tab and click Submit, which opens this issue pre-filled for
+        you. You can edit this issue any time before the season's first
+        match kicks off to change your prediction; it will be re-checked
+        automatically. After that deadline, edits are no longer accepted.
+  - type: input
+    id: player_name
+    attributes:
+      label: "Your name [[player_name]]"
+      placeholder: "e.g. Kriss"
+    validations:
+      required: true
+  - type: textarea
+    id: order
+    attributes:
+      label: "Your predicted final table, 1st to 20th - one team per line [[order]]"
+      placeholder: |
+        ARS
+        LIV
+        MCI
+        ...
+    validations:
+      required: true
