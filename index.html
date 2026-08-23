@@ -244,12 +244,6 @@ function crestCell(team){
     return{rows,score,playerCount:players.length};
   }
 
-  function renderLiveTable(seasonTeams){
-    const ranked=[...seasonTeams].sort((a,b)=>+a.position-+b.position);
-    const rows=ranked.map(t=>`<tr><td>${t.position}</td><td>${crestCell(t)}</td></tr>`).join("");
-    return `<div class="tablewrap"><table><thead><tr><th>#</th><th>Team</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }
-
   function renderSeasonHTML(scoring){
     const{seasonTeams,players}=scoring;
     if(!players.length){
@@ -266,11 +260,12 @@ function crestCell(team){
     const collective=computeCollective(scoring);
     const collectiveCard=collective?predTable("The Collective",collective.rows,collective.score):"";
 
+    const plRows=[...seasonTeams].sort((a,b)=>+a.position-+b.position).map(t=>({predicted:+t.position,team:t}));
+    const plCard=predTable("PL Table",plRows);
+
     return `
       <div class="subhead">Predictions</div>
-      <div class="predgrid">${cards}${collectiveCard}</div>
-      <div class="subhead" style="margin-top:28px">PL Table</div>
-      ${renderLiveTable(seasonTeams)}`;
+      <div class="predgrid">${cards}${collectiveCard}${plCard}</div>`;
   }
 
   // ---------- tab: Overview ----------
