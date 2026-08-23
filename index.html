@@ -121,13 +121,11 @@
   </section>
 
   <div class="tabs main" id="tabBar">
-    <button class="tab active" data-tab="rules">Rules</button>
-    <button class="tab" data-tab="overview">Overview</button>
+    <button class="tab active" data-tab="overview">Overview</button>
     <button class="tab" data-tab="edit">Edit form</button>
   </div>
 
-  <div class="panel" id="panel-rules"></div>
-  <div class="panel" id="panel-overview" style="display:none"></div>
+  <div class="panel" id="panel-overview"></div>
   <div class="panel" id="panel-edit" style="display:none"></div>
 
   <div class="subhead">History</div>
@@ -289,47 +287,6 @@ function crestCell(team){
       <div class="subhead" style="margin-top:28px">Predictions</div>
       <div class="predgrid">${cards}${collectiveCard}</div>`;
   }
-
-  // ---------- tab: Rules ----------
-  document.getElementById("panel-rules").innerHTML=`
-    <section class="block">
-      <div class="head"><h2 class="disp">How it works</h2></div>
-      <div class="rec">
-        <div class="cap">The yearly cycle</div>
-        <div class="det">
-          Every August 1st, this year's 20 Premier League clubs are fetched automatically and a new prediction
-          window opens. Predictions can be made or changed right up until the season's first match kicks off —
-          after that, whatever's recorded stands for the whole season. The live table then refreshes once a day
-          at 00:00 UTC, so the Overview tab tracks everyone's score as the season actually unfolds.
-        </div>
-      </div>
-      <div class="rec">
-        <div class="cap">Scoring — golf rules</div>
-        <div class="det">
-          For each team, your score is the distance between where you predicted it and where it actually finished
-          (or currently sits) — <b>0</b> for an exact placement, <b>+1</b> for every position off. Your total is the
-          sum across all 20 teams. Lower is better; 0 is a perfect table.
-        </div>
-      </div>
-      <div class="rec">
-        <div class="cap">Submitting</div>
-        <div class="det">
-          GitHub Issue Forms can't do drag-and-drop, so submitting is two steps: arrange the table on the
-          <b>Edit form</b> tab, then click Submit — that opens a GitHub issue pre-filled with your order, and you
-          just confirm it. To change your prediction later, rearrange the table again, copy the order text, and
-          paste it into your existing issue (find it by searching
-          <code>author:@me</code> in the repo's issues) to edit it — editing re-checks and re-records it automatically.
-        </div>
-      </div>
-      <div class="rec">
-        <div class="cap">The Collective</div>
-        <div class="det">
-          Every Overview/History table also shows a blended table — each team's average predicted position across
-          everyone's picks, re-ranked into a table of its own — with its own golf score. It's not a real
-          submission, just a "wisdom of the crowd" read on the group's picks.
-        </div>
-      </div>
-    </section>`;
 
   // ---------- tab: Overview ----------
   function renderOverview(){
