@@ -3,15 +3,15 @@ season,team_id,team_name,team_abbr,team_code,position,played,won,drawn,lost,gf,g
 2026/27,1,Arsenal,ARS,t3,2,2,2,0,0,4,0,4,6
 2026/27,41,Hull City,HUL,t88,3,2,2,0,0,3,0,3,6
 2026/27,4,Chelsea,CHE,t8,4,2,2,0,0,7,5,2,6
-2026/27,130,Brentford,BRE,t94,5,2,1,1,0,4,1,3,4
-2026/27,23,Newcastle United,NEW,t4,6,2,1,1,0,4,2,2,4
-2026/27,7,Everton,EVE,t11,7,2,1,1,0,3,1,2,4
-2026/27,9,Leeds United,LEE,t2,8,2,1,1,0,2,1,1,4
-2026/27,131,Brighton & Hove Albion,BHA,t36,9,2,1,0,1,7,4,3,3
-2026/27,12,Manchester United,MUN,t1,10,2,1,0,1,5,4,1,3
-2026/27,29,Sunderland,SUN,t56,11,2,1,0,1,2,2,0,3
-2026/27,8,Ipswich Town,IPS,t40,12,2,1,0,1,4,6,-2,3
-2026/27,10,Liverpool,LIV,t14,13,2,0,2,0,4,4,0,2
+2026/27,10,Liverpool,LIV,t14,5,3,1,2,0,6,4,2,5
+2026/27,130,Brentford,BRE,t94,6,2,1,1,0,4,1,3,4
+2026/27,23,Newcastle United,NEW,t4,7,2,1,1,0,4,2,2,4
+2026/27,7,Everton,EVE,t11,8,2,1,1,0,3,1,2,4
+2026/27,9,Leeds United,LEE,t2,9,2,1,1,0,2,1,1,4
+2026/27,131,Brighton & Hove Albion,BHA,t36,10,2,1,0,1,7,4,3,3
+2026/27,12,Manchester United,MUN,t1,11,2,1,0,1,5,4,1,3
+2026/27,29,Sunderland,SUN,t56,12,2,1,0,1,2,2,0,3
+2026/27,8,Ipswich Town,IPS,t40,13,3,1,0,2,4,8,-4,3
 2026/27,127,Bournemouth,BOU,t91,14,2,0,1,1,2,3,-1,1
 2026/27,15,Nottingham Forest,NFO,t17,15,2,0,1,1,2,3,-1,1
 2026/27,34,Fulham,FUL,t54,16,2,0,0,2,2,4,-2,0
