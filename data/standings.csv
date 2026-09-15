@@ -1,16 +1,16 @@
 season,team_id,team_name,team_abbr,team_code,position,played,won,drawn,lost,gf,ga,gd,points
 2026/27,1,Arsenal,ARS,t3,1,4,4,0,0,8,1,7,12
 2026/27,11,Manchester City,MCI,t43,2,4,4,0,0,8,2,6,12
-2026/27,41,Hull City,HUL,t88,3,4,2,2,0,5,2,3,8
-2026/27,131,Brighton & Hove Albion,BHA,t36,4,4,2,1,1,13,5,8,7
-2026/27,4,Chelsea,CHE,t8,5,4,2,1,1,10,9,1,7
-2026/27,130,Brentford,BRE,t94,6,4,1,3,0,7,4,3,6
-2026/27,10,Liverpool,LIV,t14,7,4,1,3,0,6,4,2,6
-2026/27,7,Everton,EVE,t11,8,4,1,3,0,5,3,2,6
-2026/27,8,Ipswich Town,IPS,t40,9,4,2,0,2,7,10,-3,6
-2026/27,23,Newcastle United,NEW,t4,10,3,1,2,0,6,4,2,5
-2026/27,9,Leeds United,LEE,t2,11,3,1,2,0,3,2,1,5
-2026/27,15,Nottingham Forest,NFO,t17,12,4,1,2,1,4,4,0,5
+2026/27,9,Leeds United,LEE,t2,3,4,2,2,0,7,3,4,8
+2026/27,41,Hull City,HUL,t88,4,4,2,2,0,5,2,3,8
+2026/27,131,Brighton & Hove Albion,BHA,t36,5,4,2,1,1,13,5,8,7
+2026/27,4,Chelsea,CHE,t8,6,4,2,1,1,10,9,1,7
+2026/27,130,Brentford,BRE,t94,7,4,1,3,0,7,4,3,6
+2026/27,10,Liverpool,LIV,t14,8,4,1,3,0,6,4,2,6
+2026/27,7,Everton,EVE,t11,9,4,1,3,0,5,3,2,6
+2026/27,8,Ipswich Town,IPS,t40,10,4,2,0,2,7,10,-3,6
+2026/27,15,Nottingham Forest,NFO,t17,11,4,1,2,1,4,4,0,5
+2026/27,23,Newcastle United,NEW,t4,12,4,1,2,1,7,8,-1,5
 2026/27,12,Manchester United,MUN,t1,13,4,1,1,2,7,7,0,4
 2026/27,29,Sunderland,SUN,t56,14,4,1,1,2,3,5,-2,4
 2026/27,127,Bournemouth,BOU,t91,15,4,0,3,1,6,7,-1,3
